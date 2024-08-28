@@ -12,6 +12,7 @@
     "axios": "^1.7.5",
     "express": "^4.18.2",
     "meu-projeto": "file:",
+    "mongoose": "^8.6.0",
     "supertest": "^7.0.0"
   },
   "devDependencies": {

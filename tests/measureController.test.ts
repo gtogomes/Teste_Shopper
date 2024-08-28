@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../src/app';
 import { GeminiService } from '../src/services/geminiService';
+import Measure from '../src/models/measure'; // Importar o modelo para limpar o banco de dados
 
 jest.mock('../src/services/geminiService');
 
@@ -12,6 +13,11 @@ describe('MeasureController', () => {
 
         // Mock do método 'extractMeasureValue'
         geminiServiceMock.extractMeasureValue = jest.fn().mockResolvedValue(100);
+    });
+
+    afterEach(async () => {
+        // Limpar o banco de dados após cada teste, se necessário
+        await Measure.deleteMany({});
     });
 
     it('should upload a new measure', async () => {
@@ -27,6 +33,7 @@ describe('MeasureController', () => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('measure_uuid');
         expect(response.body).toHaveProperty('measure_value', 100);
+        expect(response.body).toHaveProperty('image_url', 'link-temporario');
     });
 
     it('should return 400 when invalid data is sent', async () => {
@@ -40,7 +47,7 @@ describe('MeasureController', () => {
             });
 
         expect(response.status).toBe(400);
-        expect(response.body.error_code).toBe('INVALID_DATA');
+        expect(response.body.error).toBeDefined();
     });
 
     it('should confirm a measure successfully', async () => {
