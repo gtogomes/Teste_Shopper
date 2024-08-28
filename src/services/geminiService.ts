@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export class GeminiService {
     private readonly apiKey: string;
     private readonly apiUrl: string = 'https://api.gemini.com/vision'; 
-    // Ajuste o endpoint conforme necessário
 
     constructor(apiKey: string) {
         this.apiKey = apiKey;
@@ -30,17 +29,21 @@ export class GeminiService {
         };
     }
 
-    private extractMeasureValue(data: any): number | null {
+    public extractMeasureValue(data: any): number | null {
         return data?.measure_value ?? null;
     }
 
     private handleError(error: unknown) {
-        if (axios.isAxiosError(error)) {
+        if (this.isAxiosError(error)) {
             console.error(`API Error: ${error.message}`);
         } else if (error instanceof Error) {
             console.error('Unexpected Error:', error.message);
         } else {
             console.error('Unexpected Error:', String(error));
         }
+    }
+
+    private isAxiosError(error: unknown): error is AxiosError {
+        return (error as AxiosError).isAxiosError !== undefined;
     }
 }

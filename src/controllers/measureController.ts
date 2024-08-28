@@ -26,7 +26,9 @@ export class MeasureController {
         }
 
         // Obter valor da imagem via Gemini API
-        const measure_value = await geminiService.getMeasureFromImage(image);
+        const measure_value: number | null = await geminiService.extractMeasureValue(image);
+        const measure_value_converted: number | undefined = measure_value !== null ? measure_value : undefined;
+
         const measure_uuid = 'some-unique-id';  // Gerar um UUID
 
         const newMeasure: Measure = {
@@ -35,7 +37,7 @@ export class MeasureController {
             measure_datetime: new Date(measure_datetime),
             measure_type,
             image_url: 'temporary-link-to-image',
-            measure_value,
+            measure_value: measure_value_converted,
             has_confirmed: false
         };
 
